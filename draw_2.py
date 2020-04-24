@@ -82,6 +82,7 @@ for j, (cnnid, filterid) in enumerate(zip(args.cnnid, args.filterid)):
     
     plt.imshow(normalize(filter_visualization.permute(1, 2, 0)))
     plt.savefig(os.path.join(args.output_dir, f'p2-{j}-1.jpg'), bbox_inches='tight')
+    plt.close()
 
     fig, axs = plt.subplots(2, len(args.img_indices), figsize=(15, 8))
     for i, img in enumerate(images):
@@ -90,3 +91,4 @@ for j, (cnnid, filterid) in enumerate(zip(args.cnnid, args.filterid)):
         axs[1][i].imshow(normalize(img))
     
     plt.savefig(os.path.join(args.output_dir, f'p2-{j}-2.jpg'), bbox_inches='tight')
+    plt.close()

@@ -5,6 +5,10 @@ if [ $# -ne 2 ]; then
   exit
 fi
 
+model=140.112.90.197:10297/hw5/model.ckpt
+
+wget "${model}"
+
 python3 draw_1.py $1 $2
 python3 draw_2.py $1 $2
 python3 draw_3.py $1 $2
