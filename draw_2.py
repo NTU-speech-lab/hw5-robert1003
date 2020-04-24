@@ -19,8 +19,8 @@ args = {
     'dataset_dir': sys.argv[1],
     'output_dir': sys.argv[2],
     'img_indices': [1429, 762, 3384, 210, 442],
-    'cnnid': 13,
-    'filterid': 0,
+    'cnnid': [13, 23, 33, 43],
+    'filterid': [1, 1, 1, 1],
     'device': 'cuda'
 }
 args = argparse.Namespace(**args)
@@ -73,18 +73,20 @@ def filter_explaination(x, model, cnnid, filterid, iteration=100, lr=1):
     return filter_activations, filter_visualization
 
 # draw filter activations and visualization
-images, labels = valid_set.getbatch(args.img_indices)
-filter_activations, filter_visualization = filter_explaination(
-    images, model, cnnid=args.cnnid, filterid=args.filterid, iteration=100, lr=0.1
-)
+for j, (cnnid, filterid) in enumerate(zip(args.cnnid, args.filterid)):
+    # draw filter activations and visualization
+    images, labels = valid_set.getbatch(args.img_indices)
+    filter_activations, filter_visualization = filter_explaination(
+        images, model, cnnid=cnnid, filterid=filterid, iteration=100, lr=0.1
+    )
+    
+    plt.imshow(normalize(filter_visualization.permute(1, 2, 0)))
+    plt.savefig(os.path.join(args.output_dir, f'p2-{j}-1.jpg'), bbox_inches='tight')
 
-plt.imshow(normalize(filter_visualization.permute(1, 2, 0)))
-plt.savefig(os.path.join(args.output_dir, 'p2-1.jpg'), bbox_inches='tight')
-
-fig, axs = plt.subplots(2, len(args.img_indices), figsize=(15, 8))
-for i, img in enumerate(images):
-    axs[0][i].imshow(img_process(img))
-for i, img in enumerate(filter_activations):
-    axs[1][i].imshow(normalize(img))
-
-plt.savefig(os.path.join(args.output_dir, 'p2-2.jpg'), bbox_inches='tight')
+    fig, axs = plt.subplots(2, len(args.img_indices), figsize=(15, 8))
+    for i, img in enumerate(images):
+        axs[0][i].imshow(img_process(img))
+    for i, img in enumerate(filter_activations):
+        axs[1][i].imshow(normalize(img))
+    
+    plt.savefig(os.path.join(args.output_dir, f'p2-{j}-2.jpg'), bbox_inches='tight')
